@@ -16,3 +16,11 @@ tmp
 .yardoc
 _yardoc
 doc/
+
+*~
+**/*~
+
+*.swp
+.project
+.DS_Store
+
