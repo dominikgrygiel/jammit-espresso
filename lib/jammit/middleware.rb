@@ -23,7 +23,7 @@ module Jammit
 
     def _call(env)
       if matches = %r(^/#{Jammit.package_path}/(.*)\.(.*)).match(env['PATH_INFO'])
-        package(matches[1].to_s, matches[2] || "none")
+        package(matches[1].to_s.gsub(/-\d+\Z/, ''), matches[2] || "none")
       else
         @app.call(env)
       end

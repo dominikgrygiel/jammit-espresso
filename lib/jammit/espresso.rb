@@ -9,12 +9,26 @@ end
 require 'jammit/helper'
 
 module Jammit::HelperOverrides
+
+private
   def javascript_include_tag(*sources)
-    script_tag(*sources.flatten)
+    script_tag(*append_last_midified(*sources.flatten))
   end
 
   def stylesheet_link_tag(*sources)
-    style_tag(*sources.flatten)
+    style_tag(*append_last_midified(*sources.flatten))
+  end
+
+  def append_last_midified(path, options = {})
+    [path.gsub(/(\.[a-z]+)/i, "-#{public_last_modified(path)}#{'\1'}"), options]
+  end
+
+  def public_last_modified(path)
+    if File.exists?(f = File.join(Jammit::Middleware::PUBLIC_ROOT, path))
+      File.mtime(f).to_i
+    else
+      @public_last_modified ||= Dir["#{Jammit::Middleware::PUBLIC_ROOT}/**/*"].map{ |f| File.mtime(f) }.max.to_i
+    end
   end
 end
 
